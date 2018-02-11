@@ -1,6 +1,8 @@
-import notifications from './Notifications';
-require('./main.css');
+class Form {
+    constructor() {
+        let num = [5, 10, 15].map(num => num * 2);
+        console.log(num);
+    }
+}
 
-
-notifications.notify('NOTIFY');
-notifications.log('LOG');
+new Form();
