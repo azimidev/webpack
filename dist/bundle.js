@@ -67,7 +67,7 @@
 /* 0 */
 /***/ (function(module, exports) {
 
-alert('Changed Again!');
+alert('salam');
 
 /***/ })
 /******/ ]);
