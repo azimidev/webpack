@@ -1,0 +1,16 @@
+{
+    "name": "parsclick-webpack",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "dev": "webpack src/main.js dist/bundle.js",
+        "watch": "npm run dev -- --watch"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "webpack": "^3.10.0"
+    }
+}
