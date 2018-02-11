@@ -17,6 +17,15 @@ module.exports = {
                 exclude: '/node_modules/',
                 use: 'babel-loader'
             }
-        ]
-    }
+        ],
+    },
+    plugins: [
+        // new webpack.optimize.UglifyJsPlugin()
+    ],
 };
+
+if (process.env.NODE_ENV === 'production') {
+    module.exports.plugins.push(
+        new webpack.optimize.UglifyJsPlugin()
+    );
+}

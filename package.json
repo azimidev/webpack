@@ -4,7 +4,8 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "dev": "webpack",
+        "dev": "NODE_ENV=development webpack",
+        "prod": "NODE_ENV=production webpack",
         "watch": "npm run dev -- --watch",
         "local": "node_modules/.bin/webpack"
     },
