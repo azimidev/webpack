@@ -9,9 +9,12 @@
         "local": "node_modules/.bin/webpack"
     },
     "keywords": [],
-    "author": "",
+    "author": "PARSCLICK",
     "license": "ISC",
     "devDependencies": {
-        "webpack": "^3.10.0"
-    }
+        "css-loader": "^0.28.9",
+        "style-loader": "^0.20.1",
+        "webpack": "^2.7.0"
+    },
+    "dependencies": {}
 }
