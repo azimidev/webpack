@@ -18,9 +18,16 @@ module.exports = {
         rules: [{
                 test: /\.s[ac]ss$/,
                 use: ExtractTextPlugin.extract({
-                    use: ["css-loader", "sass-loader"],
+                    loader: ["css-loader", "sass-loader"],
                     fallback: "style-loader",
                 })
+            },
+            {
+                test: /\(.png|jpe?g|gif|svg|bmp|eot|ttf|woff|woff2)$/,
+                loader: "file-loader",
+                options: {
+                    name: '[name].[hash].[ext]'
+                }
             },
             {
                 test: /\.js$/,
