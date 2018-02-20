@@ -1,3 +1,7 @@
-body {
-  background-color: #ff8000;
-  background-image: url(stubs.d41d8cd98f00b204e9800998ecf8427e.png); }
+.one {
+  background-color: orange;
+}
+
+.two {
+  background-color: red;
+}

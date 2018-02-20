@@ -1,5 +1,10 @@
-$parsclick: #ff8000;
-body {
-    background-color: $parsclick;
-    background-image: url('./img/stubs.png');
+
+.one {
+	background-color : orange;
+}
+.two {
+	background-color : red;
+}
+div > p {
+	background-color : green;
 }
