@@ -8,7 +8,7 @@ var inProduction       = (process.env.NODE_ENV === 'production');
 
 module.exports = {
 	entry   : {
-		app   : [
+		app    : [
 			'./src/main.js',
 			'./src/main.scss',
 		],
@@ -28,11 +28,23 @@ module.exports = {
 				}),
 			},
 			{
-				test    : /\.(png|jpe?g|gif|svg|bmp|eot|ttf|woff|woff2)$/,
-				loader  : "file-loader",
+				test: /\.(svg|eot|ttf|woff|woff2)$/,
+				loaders : 'file-loader',
 				options : {
-					name : '[name].[chunkhash].[ext]',
+					name : '[name].[hash].[ext]',
 				},
+			},
+			{
+				test    : /\.(png|jpe?g|gif|bmp)$/,
+				loaders : [
+					{
+						loader  : "file-loader",
+						options : {
+							name : '/image/[name].[hash].[ext]',
+						},
+					},
+					'img-loader'
+				],
 			},
 			{
 				test    : /\.js$/,
@@ -64,10 +76,10 @@ module.exports = {
 			this.plugin('done', stats => {
 				require('fs').writeFileSync(
 					path.join(__dirname, 'dist/manifest.json'),
-					JSON.stringify(stats.toJson().assetsByChunkName)
+					JSON.stringify(stats.toJson().assetsByChunkName),
 				);
 			});
-		}
+		},
 	],
 };
 

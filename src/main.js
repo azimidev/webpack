@@ -1,1 +1,1 @@
-alert('changed again again');
+require('./main.scss');
