@@ -1,10 +1,11 @@
-var webpack            = require('webpack');
-var path               = require('path');
-var ExtractTextPlugin  = require('extract-text-webpack-plugin');
-var glob               = require('glob');
-var PurifyCSSPlugin    = require('purifycss-webpack');
-var CleanWebpackPlugin = require('clean-webpack-plugin');
-var inProduction       = (process.env.NODE_ENV === 'production');
+const webpack            = require('webpack');
+const path               = require('path');
+const ExtractTextPlugin  = require('extract-text-webpack-plugin');
+const glob               = require('glob');
+const PurifyCSSPlugin    = require('purifycss-webpack');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+const ManifestPlugin     = require('./plugins/ManifestPlugin');
+const inProduction       = (process.env.NODE_ENV === 'production');
 
 module.exports = {
 	entry   : {
@@ -28,7 +29,7 @@ module.exports = {
 				}),
 			},
 			{
-				test: /\.(svg|eot|ttf|woff|woff2)$/,
+				test    : /\.(svg|eot|ttf|woff|woff2)$/,
 				loaders : 'file-loader',
 				options : {
 					name : '[name].[hash].[ext]',
@@ -43,7 +44,7 @@ module.exports = {
 							name : '/image/[name].[hash].[ext]',
 						},
 					},
-					'img-loader'
+					'img-loader',
 				],
 			},
 			{
@@ -54,7 +55,6 @@ module.exports = {
 		],
 	},
 	plugins : [
-		// new webpack.optimize.UglifyJsPlugin()
 		new ExtractTextPlugin("[name].[chunkhash].css"),
 
 		new CleanWebpackPlugin(['dist'], {
@@ -72,14 +72,16 @@ module.exports = {
 			minimize : inProduction,
 		}),
 
-		function() {
-			this.plugin('done', stats => {
-				require('fs').writeFileSync(
-					path.join(__dirname, 'dist/manifest.json'),
-					JSON.stringify(stats.toJson().assetsByChunkName),
-				);
-			});
-		},
+		new ManifestPlugin(),
+
+		// function() {
+		// 	this.plugin('done', stats => {
+		// 		require('fs').writeFileSync(
+		// 			path.join(__dirname, 'dist/manifest.json'),
+		// 			JSON.stringify(stats.toJson().assetsByChunkName),
+		// 		);
+		// 	});
+		// },
 	],
 };
 
