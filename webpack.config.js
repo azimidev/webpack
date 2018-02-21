@@ -8,7 +8,7 @@ var inProduction       = (process.env.NODE_ENV === 'production');
 
 module.exports = {
 	entry   : {
-		main   : [
+		app   : [
 			'./src/main.js',
 			'./src/main.scss',
 		],
@@ -31,7 +31,7 @@ module.exports = {
 				test    : /\.(png|jpe?g|gif|svg|bmp|eot|ttf|woff|woff2)$/,
 				loader  : "file-loader",
 				options : {
-					name : '[name].[hash].[ext]',
+					name : '[name].[chunkhash].[ext]',
 				},
 			},
 			{
@@ -43,7 +43,7 @@ module.exports = {
 	},
 	plugins : [
 		// new webpack.optimize.UglifyJsPlugin()
-		new ExtractTextPlugin("[name].css"),
+		new ExtractTextPlugin("[name].[chunkhash].css"),
 
 		new CleanWebpackPlugin(['dist'], {
 			root    : __dirname,
@@ -59,6 +59,15 @@ module.exports = {
 		new webpack.LoaderOptionsPlugin({
 			minimize : inProduction,
 		}),
+
+		function() {
+			this.plugin('done', stats => {
+				require('fs').writeFileSync(
+					path.join(__dirname, 'dist/manifest.json'),
+					JSON.stringify(stats.toJson().assetsByChunkName)
+				);
+			});
+		}
 	],
 };
 
