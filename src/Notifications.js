@@ -6,7 +6,7 @@ function log(message) {
     console.log(message);
 }
 
-export default {
+module.exports = {
     notify,
     log
 }

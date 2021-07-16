@@ -1,11 +1,9 @@
-const webpack            = require('webpack');
-const path               = require('path');
-const ExtractTextPlugin  = require('extract-text-webpack-plugin');
-const glob               = require('glob');
-const PurifyCSSPlugin    = require('purifycss-webpack');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
-const ManifestPlugin     = require('./plugins/ManifestPlugin');
-const inProduction       = (process.env.NODE_ENV === 'production');
+const webpack = require('webpack');
+const path = require('path');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
+const htmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
 	entry   : {
@@ -16,77 +14,77 @@ module.exports = {
 		vendor : ['jquery'],
 	},
 	output  : {
-		path     : path.resolve(__dirname, './dist'),
+		path : path.resolve(__dirname, './dist'),
 		filename : '[name].[chunkhash].js',
 	},
 	module  : {
 		rules : [
 			{
-				test : /\.s[ac]ss$/,
-				use  : ExtractTextPlugin.extract({
-					loader   : ["css-loader", "sass-loader"],
-					fallback : "style-loader",
-				}),
+			  test : /\.scss$/,
+			  use  : [
+				  MiniCssExtractPlugin.loader,
+				  {
+					  loader: "css-loader",
+					  options: {
+						  url: false
+					  }
+				  },
+				  {
+					  loader: "sass-loader",
+					  options: {
+						  implementation: require("sass"),
+					  },
+				  }
+			  ],
 			},
 			{
-				test    : /\.(svg|eot|ttf|woff|woff2)$/,
-				loaders : 'file-loader',
-				options : {
-					name : '[name].[hash].[ext]',
-				},
+			  test : /\.(svg|eot|ttf|woff|woff2)$/,
+			  loader : 'file-loader',
+			  options : {
+			  	  name : '[name].[hash].[ext]',
+			  },
 			},
 			{
-				test    : /\.(png|jpe?g|gif|bmp)$/,
-				loaders : [
-					{
-						loader  : "file-loader",
-						options : {
-							name : '/image/[name].[hash].[ext]',
-						},
-					},
-					'img-loader',
-				],
+			  test : /\.(png|jpe?g|gif|bmp)$/,
+			  use : [
+				  {
+					  loader  : "file-loader",
+					  options : {
+						  name : '/image/[name].[hash].[ext]',
+							outputPath: "./fonts/",
+							publicPath: "./fonts",
+					  },
+				  },
+				  'img-loader',
+			  ]
 			},
 			{
-				test    : /\.js$/,
-				exclude : '/node_modules/',
-				use     : 'babel-loader',
+			  test : /\.js$/,
+			  use : [
+				{
+				  loader: "babel-loader",
+				  options: {
+					presets: ["@babel/preset-env"],
+				  },
+				}
+			  ]
 			},
 		],
 	},
+	mode: "development",
 	plugins : [
-		new ExtractTextPlugin("[name].[chunkhash].css"),
-
-		new CleanWebpackPlugin(['dist'], {
-			root    : __dirname,
-			verbose : true,
-			dry     : false,
+		new MiniCssExtractPlugin({
+		  filename: "[name].[chunkhash].css"
 		}),
+		new CleanWebpackPlugin(),
+		
+		new WebpackManifestPlugin(),
 
-		new PurifyCSSPlugin({
-			paths    : glob.sync(path.join(__dirname, 'index.html')),
-			minimize : inProduction,
-		}),
-
-		new webpack.LoaderOptionsPlugin({
-			minimize : inProduction,
-		}),
-
-		new ManifestPlugin(),
-
-		// function() {
-		// 	this.plugin('done', stats => {
-		// 		require('fs').writeFileSync(
-		// 			path.join(__dirname, 'dist/manifest.json'),
-		// 			JSON.stringify(stats.toJson().assetsByChunkName),
-		// 		);
-		// 	});
-		// },
+		new htmlWebpackPlugin({
+			template: "src/index.html"
+		})
 	],
+	optimization: {
+		minimize: true,
+	},
 };
-
-if (inProduction) {
-	module.exports.plugins.push(
-		new webpack.optimize.UglifyJsPlugin(),
-	);
-}
